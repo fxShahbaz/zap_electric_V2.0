@@ -14,8 +14,8 @@ export default function DealerCta() {
                 Sell Zap in your city
               </h2>
               <p className="max-w-lg text-lg leading-relaxed text-paper/70">
-                We are appointing dealers across India. Tell us your territory
-                and we will tell you whether it is open.
+                We are appointing dealers across India. Tell us your city and
+                we will tell you whether it is open.
               </p>
               <CTA href="/dealers" variant="green">
                 Dealer programme
