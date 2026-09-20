@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Zap v2.1 — a white site.
+   Paper is the default surface, mist is the only alternate, and ink is kept
+   for type, the footer and the two panels that need to land hard (dealers,
+   enquiry). Green is an accent, never a background for long-form text.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-paper: #ffffff;
+  --color-mist: #f6f7f4;
+  --color-cloud: #eceee8;
+  --color-line: #e4e6e0;
+
+  --color-ink: #101310;
+  --color-graphite: #1b1f1a;
+  --color-slate: #5b615a;
+  --color-ash: #8b918a;
+
+  --color-zap: #61b76e;
+  --color-zap-ink: #1c7a3d;
+  --color-zap-wash: #eef6ef;
+
+  --color-flag: #a3311f;
+  --color-flag-wash: #fbf0ee;
+
+  --font-display: var(--font-archivo), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-synthesis-weight: none;
+    overscroll-behavior-y: none;
+  }
+
+  ::selection {
+    background-color: var(--color-zap);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-zap-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+}
+
+@utility shell {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 84rem;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 3rem;
+  }
+}
+
+/* Headings: sentence case, tight, readable — no all-caps walls. */
+@utility title {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 100;
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 1.04;
+}
+
+@utility lead {
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.6;
+  color: var(--color-slate);
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@utility figure-num {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 100;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility card {
+  border: 1px solid var(--color-line);
+  border-radius: 1.25rem;
+  background-color: var(--color-paper);
+}
+
+/* Scroll reveals — JS only flips [data-shown]. Everything is gated behind
+   [data-reveal-ready], set by the inline head script before first paint, so a
+   failed bundle or JS-off browser never leaves content hidden. */
+@layer components {
+  :root[data-reveal-ready] [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+    transition:
+      opacity 0.8s var(--ease-out-expo),
+      transform 0.9s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  :root[data-reveal-ready] [data-reveal][data-shown="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Above the fold: CSS keyframes on parse, never waits for hydration. */
+  [data-appear] {
+    animation: zap-appear 0.9s var(--ease-out-expo) both;
+    animation-delay: var(--appear-delay, 0ms);
+  }
+  [data-appear-line] {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+  }
+  [data-appear-line] > span {
+    display: block;
+    animation: zap-line 1s var(--ease-out-expo) both;
+    animation-delay: var(--appear-delay, 0ms);
+  }
+}
+
+@keyframes zap-appear {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes zap-line {
+  from {
+    transform: translate3d(0, 105%, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  [data-appear],
+  [data-appear-line] > span {
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-ink) 16%, transparent);
+  border-radius: 999px;
+  border: 3px solid var(--color-paper);
+}
+
+/* The dealer invitation dialog. The browser owns the top layer and the focus
+   trap; this is only how it looks arriving. ------------------------------- */
+dialog.invite {
+  border: 1px solid var(--color-line);
+  box-shadow: 0 32px 80px -24px color-mix(in srgb, var(--color-ink) 45%, transparent);
+}
+
+/* ::backdrop sits in the top layer with no parent element, so it inherits no
+   custom properties — var(--color-ink) would resolve to nothing here and the
+   whole declaration would be dropped for the UA default. Ink, literally. */
+dialog.invite::backdrop {
+  background-color: rgb(16 19 16 / 0.55);
+}
+
+/* The dialog is a container, not a control. Focus lands on it before moving
+   inside; the global green ring around the whole panel is not what that means. */
+dialog.invite:focus,
+dialog.invite:focus-visible {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  dialog.invite[open] {
+    animation: invite-rise 420ms var(--ease-out-expo);
+  }
+
+  dialog.invite[open]::backdrop {
+    animation: invite-fade 420ms var(--ease-out-expo);
+  }
+}
+
+@keyframes invite-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes invite-fade {
+  from {
+    opacity: 0;
+  }
+}
