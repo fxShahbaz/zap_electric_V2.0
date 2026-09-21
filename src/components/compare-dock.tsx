@@ -36,15 +36,17 @@ export default function CompareDock() {
     >
       <div className="pointer-events-auto mx-auto flex w-fit max-w-full items-center gap-3 rounded-full bg-ink py-2 pl-2.5 pr-2 text-paper shadow-[0_12px_40px_rgba(16,19,16,0.28)] sm:gap-4">
         <div className="flex items-center gap-3">
-          <ul className="flex items-center gap-1.5">
+          {/* Phones get the count and the buttons only; at that width the
+              thumbnails were being squeezed into slivers. */}
+          <ul className="hidden shrink-0 items-center gap-1.5 sm:flex">
             {models.map((model) => (
-              <li key={model.id} className="relative">
+              <li key={model.id} className="relative shrink-0">
                 <Image
                   src={model.image}
                   alt=""
                   width={96}
                   height={72}
-                  className="h-9 w-9 rounded-full object-cover object-[center_30%]"
+                  className="h-9 w-9 max-w-none rounded-full object-cover object-[center_30%]"
                 />
                 <button
                   type="button"
@@ -58,7 +60,7 @@ export default function CompareDock() {
             ))}
           </ul>
 
-          <p className="whitespace-nowrap text-sm text-paper/60">
+          <p className="whitespace-nowrap pl-3 text-sm text-paper/60 sm:pl-0">
             {ready ? (
               <>
                 {models.length} selected

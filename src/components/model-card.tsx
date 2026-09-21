@@ -32,7 +32,7 @@ export default function ModelCard({
             className="object-cover object-[center_30%] transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
           />
         </div>
-        <h3 className="title mt-4 flex items-center gap-2 pr-28 text-xl">
+        <h3 className="title mt-4 flex items-center gap-2 pr-32 text-xl">
           Zap {model.name}
           <span
             aria-hidden
@@ -41,7 +41,7 @@ export default function ModelCard({
             →
           </span>
         </h3>
-        <p className="lead mt-1 pr-28 text-sm">
+        <p className="lead mt-1 pr-32 text-sm">
           {model.range}
           {detailed
             ? ` · ${model.colours.length} ${model.colours.length === 1 ? "colour" : "colours"}`

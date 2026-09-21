@@ -25,7 +25,7 @@ export default function CompareToggle({
   const full = !selected && ids.length >= MAX_COMPARE;
 
   const base =
-    "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs transition-colors duration-200 disabled:cursor-not-allowed";
+    "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm transition-colors duration-200 disabled:cursor-not-allowed";
 
   const look = selected
     ? "bg-zap-ink text-paper hover:bg-ink"
@@ -45,7 +45,7 @@ export default function CompareToggle({
       title={full ? `You can compare up to ${MAX_COMPARE} models` : undefined}
       className={`${base} ${look} ${className}`}
     >
-      <span aria-hidden className="text-sm leading-none">
+      <span aria-hidden className="text-base leading-none">
         {selected ? "✓" : "+"}
       </span>
       {selected ? "Added" : "Compare"}
