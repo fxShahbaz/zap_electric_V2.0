@@ -11,6 +11,28 @@ export const metadata: Metadata = {
     "Zap Electric builds nine electric scooters across two series, sold through appointed dealers across India.",
 };
 
+const tones = {
+  plain: { card: "bg-mist text-ink", muted: "text-slate" },
+  ink: { card: "bg-ink text-paper", muted: "text-paper/60" },
+  wash: { card: "bg-zap-wash text-ink", muted: "text-slate" },
+  zap: { card: "bg-zap text-ink", muted: "text-ink/70" },
+} as const;
+
+/** Laid out to fill a three-column grid exactly: each big card spans two, so
+ *  every row is one big and one small, or three small. The figures are the
+ *  ones already in the copy, not new claims. */
+const bento: { index: string; figure?: { value: string; unit: string; tone: keyof typeof tones } }[] = [
+  { index: "01" },
+  { index: "03", figure: { value: "120", unit: "km on a charge", tone: "ink" } },
+  { index: "02" },
+  { index: "04" },
+  { index: "05" },
+  { index: "06", figure: { value: "80", unit: "kg kerb weight", tone: "wash" } },
+  { index: "07" },
+  { index: "08" },
+  { index: "09", figure: { value: "25", unit: "km/hr class", tone: "zap" } },
+];
+
 export default function AboutPage() {
   return (
     <>
@@ -28,17 +50,43 @@ export default function AboutPage() {
             Nine reasons it makes sense on a normal week
           </h2>
 
-          <ul className="mt-14 grid gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {benefits.map((benefit, index) => (
-              <li
-                key={benefit.index}
-                data-reveal
-                style={{ ["--reveal-delay" as string]: `${(index % 3) * 70}ms` }}
-              >
-                <h3 className="title text-lg">{benefit.title}</h3>
-                <p className="lead mt-2 text-[0.9375rem]">{benefit.copy}</p>
-              </li>
-            ))}
+          {/* A bento, not a wall of nine equal paragraphs: the three reasons
+              that come with a number get a big card and the number itself. */}
+          <ul className="mt-14 grid gap-3 sm:grid-flow-row-dense sm:grid-cols-2 lg:grid-cols-3">
+            {bento.map(({ index, figure }, position) => {
+              const benefit = benefits.find((item) => item.index === index)!;
+              const tone = figure ? tones[figure.tone] : tones.plain;
+              return (
+                <li
+                  key={index}
+                  data-reveal
+                  style={{ ["--reveal-delay" as string]: `${(position % 3) * 70}ms` }}
+                  className={`flex flex-col justify-between gap-10 rounded-2xl p-7 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 md:p-8 ${tone.card} ${
+                    figure ? "sm:col-span-2" : ""
+                  }`}
+                >
+                  {figure ? (
+                    <p className="flex items-baseline gap-2">
+                      <span className="figure-num text-[clamp(3.5rem,7vw,5.5rem)]">
+                        {figure.value}
+                      </span>
+                      <span className={`text-lg ${tone.muted}`}>{figure.unit}</span>
+                    </p>
+                  ) : (
+                    <span className={`font-mono text-xs tracking-[0.14em] ${tone.muted}`}>
+                      {index}
+                    </span>
+                  )}
+
+                  <div className={figure ? "max-w-md" : ""}>
+                    <h3 className="title text-lg">{benefit.title}</h3>
+                    <p className={`mt-2 text-[0.9375rem] leading-relaxed ${tone.muted}`}>
+                      {benefit.copy}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </section>

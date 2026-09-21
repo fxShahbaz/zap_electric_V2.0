@@ -76,6 +76,7 @@ before launch.
 src/app/layout.tsx        fonts, metadata, header/footer, smooth-scroll boot,
                           the dealer invitation dialog
 src/app/page.tsx          home — section order
+src/app/range/page.tsx    /range — the full listing, filterable by series
 src/app/range/[model]/     /range/<id> — one page per model, prerendered
 src/app/dealers/page.tsx  /dealers — the dealer programme and its form
 src/app/about/page.tsx    /about
@@ -84,7 +85,10 @@ src/components/           one file per section, plus the shared primitives
                           (range, reasons, specs, dealer-cta, enquire on home;
                            hardware, standard, gallery used by /about)
 src/lib/content.ts        the spec sheet, dealer copy, contact channels, FAQs
-src/lib/enquiry.ts        the single submit seam for all three forms
+src/lib/enquiry.ts        the single submit seam for the forms and the chat
+src/lib/chat-flow.ts      what the enquiry chat asks, in order
+src/lib/resend.ts         the one Resend call (plain fetch, server only)
+src/lib/enquiry-email.ts  how an enquiry reads in the inbox
 src/app/api/enquiry/      the route handler they post to; forwards to the
   route.ts                ZAP_ENQUIRY_WEBHOOK destination
 src/components/dealer-modal.tsx
@@ -97,9 +101,19 @@ public/images/            photography
 
 ### The footer
 
-It is a closing section, not a sign-off: the last ride-one-or-sell-them choice
-with both CTAs, then three link groups (Explore, Dealers, Get in touch), then
-the fine print. `/about` deliberately does **not** repeat that closing CTA —
+It is a closing section, not a sign-off: a slow strip of facts, the last
+ride-one-or-sell-them choice as two photo tiles, then three link groups
+(Explore, Dealers, Get in touch), a giant wordmark, and the fine print.
+
+Every fact in the strip is already stated elsewhere on the site — keep it that
+way. The motion is CSS only (the footer is a server component) and all of it
+stops under reduced motion. The giant wordmark is the logo PNG used as a
+**mask** with a faint flat fill, because the file is too small to show in
+colour at that size on a retina screen; the coloured logo sits in the fine
+print. Its rise is a scroll-driven animation, which is why the footer uses
+`overflow-clip` rather than `overflow-hidden`: hidden would make a scroll
+container and the animation would track that instead of the page. A higher
+resolution wordmark (or an SVG) would allow a full-colour version. `/about` deliberately does **not** repeat that closing CTA —
 the footer covers it on every page.
 
 ### Shared primitives
@@ -114,13 +128,41 @@ the footer covers it on every page.
 
 - **/** — hero → the range → why people buy one → what separates the two series
   → dealer panel → enquiry.
+- **/compare** — two or three models side by side. The selection lives in
+  `src/lib/compare.ts` (localStorage + `useSyncExternalStore`), so it survives
+  navigation and is shared by the card buttons, the floating dock and the
+  table. Capped at three; ids that are not in the range are dropped on read.
+  Because models in one series differ only in colour, the table has a "hide
+  identical rows" switch and counts the differences.
 - **/range/[model]** — one page per model, statically generated from
   `generateStaticParams`. Title and series line, a full-bleed image, four
   figures, the colours, the complete nineteen-row specification, an enquiry
   form that arrives with that model already selected, the rest of its series,
   and a link to the next model. An unknown slug 404s.
+- **/range** — every model, grouped by series, under a filter bar that stays
+  pinned below the header (all / 60/90 / 70/100/120). Each series keeps its
+  own specs held beside its models; then what every model shares, then the
+  enquiry form. The header's Range link, the footer and the model pages'
+  "The range" links all go here; the home page still has its own range
+  section, which links on to this page. Filtering *hides* series rather than
+  unmounting them — the reveal observer only registers elements on page load.
 - **/dealers** — header, what comes with the appointment, how it works in four
   steps, the dealer form, dealer FAQ.
+
+### The enquiry chat
+
+The round chat button in the header opens `src/components/enquiry-chat.tsx`:
+it asks the customer form's or the dealer form's questions one at a time,
+checks each answer (phone, email, too short) as it comes, reads the lot back,
+and sends only when the person says so. The wording and the order live in
+`src/lib/chat-flow.ts` — edit them there. It uses the forms' own field names,
+so the server validates a chat enquiry exactly like a form one, and the email
+says it came from the chat.
+
+Each send carries a key that Resend uses to drop duplicates for 24 hours, so a
+double tap or "Try again" after a timeout cannot email the team twice. On a
+phone the panel fills the screen; on a desktop it hangs under the header, its
+edge on the header buttons' line, and the page stays usable behind it.
 
 ### The dealer invitation
 
@@ -194,11 +236,15 @@ links use `--color-zap-ink`, which clears contrast.
 
 ## Still to replace
 
-- **A destination for the forms.** All three post to `/api/enquiry`, which
-  forwards to whatever `ZAP_ENQUIRY_WEBHOOK` points at — an inbox relay, a CRM
-  intake URL, a Zapier or Make hook. Set that one variable and every form is
-  live. With it unset the route accepts and logs in development, and fails with
-  a 503 in production rather than dropping a real dealer behind a green tick.
+- **Where enquiries go.** The three forms and the enquiry chat all post to
+  `/api/enquiry`, which emails each enquiry through **Resend**
+  (`RESEND_API_KEY` + `ENQUIRY_EMAIL_TO`, and `ENQUIRY_EMAIL_FROM` on a domain
+  verified in Resend), posts it to `ZAP_ENQUIRY_WEBHOOK`, or both — see
+  `.env.example`. Delivered means at least one of them took it. With nothing
+  set the route accepts and logs in development, and fails with a 503 in
+  production rather than dropping a real dealer behind a green tick. Until
+  `ENQUIRY_EMAIL_FROM` is set, Resend's test sender is used, and it can only
+  deliver to your own Resend account address.
 - **Photography** in `public/images/` is from Unsplash and shows other
   manufacturers' scooters — some carry visible badges. Swap in Zap product
   photography keeping the same filenames (`model-<id>.jpg`, `gallery-*.jpg`,

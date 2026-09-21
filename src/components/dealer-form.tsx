@@ -4,8 +4,15 @@ import { useState } from "react";
 import { readForm, sendEnquiry } from "@/lib/enquiry";
 import { Field, FormError, SubmitButton, Submitted, TextArea } from "@/components/form-fields";
 
-/** `onSent` lets a host (the invitation dialog) react to a successful send. */
-export default function DealerForm({ onSent }: { onSent?: () => void }) {
+/** `onSent` lets a host (the invitation dialog) react to a successful send.
+ *  `compact` tightens spacing and fields for the dialog's narrower column. */
+export default function DealerForm({
+  onSent,
+  compact = false,
+}: {
+  onSent?: () => void;
+  compact?: boolean;
+}) {
   const [pending, setPending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
@@ -39,9 +46,16 @@ export default function DealerForm({ onSent }: { onSent?: () => void }) {
     );
   }
 
+  const gap = compact ? "gap-4" : "gap-6";
+
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-6">
-      <div className="grid gap-6 sm:grid-cols-2">
+    <form
+      onSubmit={onSubmit}
+      className={`flex flex-col ${gap} ${
+        compact ? "[&_input]:py-2.5 [&_textarea]:py-2.5" : ""
+      }`}
+    >
+      <div className={`grid ${gap} sm:grid-cols-2`}>
         <Field
           label="Business name"
           name="business"
@@ -51,7 +65,8 @@ export default function DealerForm({ onSent }: { onSent?: () => void }) {
         <Field label="Your name" name="name" placeholder="Full name" autoComplete="name" />
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      {/* Phone and city pair up; email gets a full row since addresses run long. */}
+      <div className={`grid ${gap} sm:grid-cols-2`}>
         <Field
           label="Phone"
           name="phone"
@@ -61,16 +76,6 @@ export default function DealerForm({ onSent }: { onSent?: () => void }) {
           autoComplete="tel"
         />
         <Field
-          label="Email"
-          name="email"
-          type="email"
-          placeholder="you@business.com"
-          autoComplete="email"
-        />
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2">
-        <Field
           label="City"
           name="city"
           placeholder="City or town"
@@ -78,16 +83,24 @@ export default function DealerForm({ onSent }: { onSent?: () => void }) {
         />
       </div>
 
+      <Field
+        label="Email"
+        name="email"
+        type="email"
+        placeholder="you@business.com"
+        autoComplete="email"
+      />
+
       <TextArea
         label="Anything else"
         name="notes"
-        rows={3}
+        rows={compact ? 2 : 3}
         placeholder="Brands you already sell, showroom size, workshop capacity."
       />
 
       {error ? <FormError message={error} /> : null}
 
-      <SubmitButton pending={pending} className="mt-2 self-start">
+      <SubmitButton pending={pending} className={compact ? "mt-1 self-start" : "mt-2 self-start"}>
         Submit dealer enquiry
       </SubmitButton>
     </form>

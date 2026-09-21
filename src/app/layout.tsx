@@ -5,6 +5,8 @@ import SmoothScroll from "@/components/smooth-scroll";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import DealerModal from "@/components/dealer-modal";
+import CompareDock from "@/components/compare-dock";
+import EnquiryChat from "@/components/enquiry-chat";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -34,7 +36,6 @@ export const metadata: Metadata = {
       "Nine electric scooters across two series, up to 120 km per charge. Dealer appointments open across India.",
     type: "website",
   },
-  icons: { icon: "/brand/mark.png" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -62,6 +63,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main id="top">{children}</main>
         <SiteFooter />
         <DealerModal />
+        <CompareDock />
+        <EnquiryChat />
       </body>
     </html>
   );

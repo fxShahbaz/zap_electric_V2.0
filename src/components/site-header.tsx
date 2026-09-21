@@ -5,10 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-/** Section links resolve to #hash on the home page and /#hash everywhere else. */
-const sectionLinks = [{ hash: "#range", label: "Range" }];
-
-const pageLinks = [
+const links = [
+  { href: "/range", label: "Range" },
   { href: "/dealers", label: "Dealers" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
@@ -21,13 +19,8 @@ export default function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   const onHome = pathname === "/";
-  const links = [
-    ...sectionLinks.map((link) => ({
-      label: link.label,
-      href: onHome ? link.hash : `/${link.hash}`,
-    })),
-    ...pageLinks,
-  ];
+  /** /range/pulse is still "Range". */
+  const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
     const onScroll = () => {
@@ -86,7 +79,10 @@ export default function SiteHeader() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-sm text-slate transition-colors duration-200 hover:text-ink"
+              aria-current={isCurrent(link.href) ? "page" : undefined}
+              className={`text-sm transition-colors duration-200 hover:text-ink ${
+                isCurrent(link.href) ? "text-ink" : "text-slate"
+              }`}
             >
               {link.label}
             </Link>

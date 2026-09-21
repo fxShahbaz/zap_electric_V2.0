@@ -217,10 +217,12 @@ dialog.invite::backdrop {
   background-color: rgb(16 19 16 / 0.55);
 }
 
-/* The dialog is a container, not a control. Focus lands on it before moving
-   inside; the global green ring around the whole panel is not what that means. */
+/* The dialog is a container, not a control, and so is its scroller — on a
+   phone the form overflows, Chrome makes the scroller focusable, and showModal
+   hands focus to it. A green ring around the whole panel is not what that means. */
 dialog.invite:focus,
-dialog.invite:focus-visible {
+dialog.invite:focus-visible,
+dialog.invite > div:focus-visible {
   outline: none;
 }
 
@@ -244,5 +246,166 @@ dialog.invite:focus-visible {
 @keyframes invite-fade {
   from {
     opacity: 0;
+  }
+}
+
+/* Footer ------------------------------------------------------------------
+   Three small motions, all CSS so the footer stays a server component, and
+   all of them off under reduced motion. */
+
+/* The fact strip: the track holds two identical runs and slides by one. */
+@media (prefers-reduced-motion: no-preference) {
+  .footer-ticker-track {
+    animation: footer-ticker 48s linear infinite;
+  }
+
+  .footer-ticker:hover .footer-ticker-track {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes footer-ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Links: an underline that draws in from the left. */
+.footer-link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  padding-bottom: 2px;
+  transition:
+    background-size 400ms var(--ease-out-expo),
+    color 200ms;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+  color: var(--color-paper);
+  background-size: 100% 1px;
+}
+
+/* The big wordmark: the PNG's shape, filled flat and faint. */
+.footer-mark {
+  background-image: linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0.16),
+    rgb(255 255 255 / 0.04)
+  );
+  mask-image: url("/brand/wordmark-light.png");
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+}
+
+/* The wordmark rises into place as the page runs out. Scroll-driven, so it
+   needs no script; browsers without view timelines just show it in place. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .footer-mark {
+      animation: footer-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+
+@keyframes footer-rise {
+  from {
+    opacity: 0;
+    transform: translateY(45%);
+  }
+}
+
+/* Enquiry chat ------------------------------------------------------------
+   A phone gets the whole screen. From sm up it is a card hung under the
+   header, its right edge on the same line as the header's buttons: the shell
+   gutter, and past 84rem the centred shell's edge. `100%` in a fixed box is
+   the viewport without its scrollbar — the same width the header lays out in. */
+.chat-panel {
+  inset: 0;
+}
+
+@media (width >= 40rem) {
+  .chat-panel {
+    inset: auto;
+    bottom: 5.75rem;
+    right: 1.5rem;
+    width: 24rem;
+    height: min(38rem, calc(100dvh - 8rem));
+    border: 1px solid var(--color-line);
+    border-radius: 1.25rem;
+    box-shadow: 0 32px 80px -28px rgb(16 19 16 / 0.35);
+    transform-origin: bottom right;
+  }
+}
+
+@media (width >= 48rem) {
+  .chat-panel {
+    right: 1.5rem;
+    height: min(40rem, calc(100dvh - 8rem));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chat-panel {
+    animation: chat-open 360ms var(--ease-out-expo);
+  }
+
+  .chat-in {
+    animation: chat-line 320ms var(--ease-out-expo);
+  }
+
+  .chat-dots span {
+    animation: chat-dot 1.1s ease-in-out infinite;
+  }
+
+  .chat-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .chat-dots span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+}
+
+.chat-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.chat-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--color-ash);
+}
+
+@keyframes chat-open {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+@keyframes chat-line {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes chat-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
   }
 }

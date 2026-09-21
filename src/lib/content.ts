@@ -486,24 +486,51 @@ export const contactChannels = [
     title: "Dealership enquiries",
     copy: "For showrooms and retailers who want to stock the range.",
     email: "dealers@zapelectric.example",
+    image: "/images/cta.jpg",
+    imageAlt: "An electric scooter parked outside a lit storefront at night",
   },
   {
     index: "02",
     title: "Sales enquiries",
     copy: "Which model, which battery, and where to see one near you.",
     email: "sales@zapelectric.example",
+    image: "/images/gallery-rider.jpg",
+    imageAlt: "Rider on an electric scooter on a city street",
   },
   {
     index: "03",
     title: "Service and support",
     copy: "Already riding a Zap and need a part, a check-up or help with the charger.",
     email: "service@zapelectric.example",
+    image: "/images/detail-charge.jpg",
+    imageAlt: "Electric scooters plugged in and charging",
   },
   {
     index: "04",
     title: "Fleet and bulk orders",
     copy: "Ten scooters or a hundred, for delivery fleets, campuses and resorts.",
     email: "fleet@zapelectric.example",
+    image: "/images/hero.jpg",
+    imageAlt: "Riders on electric scooters coming through a city gateway",
+  },
+];
+
+/** What happens after the contact form — only what the site can promise. */
+export const contactSteps = [
+  {
+    index: "01",
+    title: "Pick a topic",
+    copy: "It decides which desk reads your message.",
+  },
+  {
+    index: "02",
+    title: "The right desk reads it",
+    copy: "Dealership questions go straight to the dealer desk.",
+  },
+  {
+    index: "03",
+    title: "We reply by email",
+    copy: "To the address you give us. Add a phone number if you would rather we call.",
   },
 ];
 

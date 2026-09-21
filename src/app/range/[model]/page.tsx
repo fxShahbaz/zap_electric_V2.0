@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Enquire from "@/components/enquire";
+import CompareToggle from "@/components/compare-toggle";
 import { CTA } from "@/components/ui";
 import {
   scooters,
@@ -50,7 +51,7 @@ export default async function ModelPage({ params }: { params: Params }) {
       <header className="bg-paper pt-32 md:pt-40">
         <div className="shell">
           <Link
-            href="/#range"
+            href="/range"
             className="text-sm text-slate transition-colors hover:text-ink"
           >
             ← The range
@@ -68,6 +69,14 @@ export default async function ModelPage({ params }: { params: Params }) {
             {platform.name} — {platform.range}, with a GEL or lithium-ion
             battery. {platform.blurb}
           </p>
+
+          <div
+            className="mt-8"
+            data-appear
+            style={{ ["--appear-delay" as string]: "180ms" }}
+          >
+            <CompareToggle id={model.id} name={model.name} tone="inline" />
+          </div>
 
           <div
             className="relative mt-14 aspect-[4/5] w-full overflow-hidden rounded-2xl bg-mist sm:aspect-[16/9]"
@@ -156,7 +165,7 @@ export default async function ModelPage({ params }: { params: Params }) {
             <h2 className="title text-[clamp(1.875rem,3.6vw,2.75rem)]">
               Others in the {platform.name}
             </h2>
-            <CTA href="/#range" variant="outline">
+            <CTA href="/range" variant="outline">
               See all nine
             </CTA>
           </div>
