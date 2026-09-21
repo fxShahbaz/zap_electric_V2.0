@@ -49,6 +49,8 @@ export default function CompareTable() {
   const shown = onlyDifferences ? rows.filter((row) => !row.identical) : rows;
   const differences = rows.filter((row) => !row.identical).length;
   const short = models.length < MIN_COMPARE;
+  // The empty "add a model" slot takes a column only while one model is picked.
+  const columns = models.length + (short ? 1 : 0);
 
   return (
     <div>
@@ -93,109 +95,108 @@ export default function CompareTable() {
         </div>
       </div>
 
-      {/* Wide on purpose: on a phone this scrolls sideways with the spec
-          column pinned, rather than squeezing values to two words a line. */}
-      <div className="mt-10 overflow-x-auto">
-        <table className="w-full min-w-[46rem] table-fixed border-collapse text-left">
-          <caption className="sr-only">
-            Specifications compared across the selected Zap models
-          </caption>
+      {/* A grid with table roles rather than a <table>: the name row has to
+          stick under the site header, and sticky cannot work inside the
+          sideways-scrolling box a wide table needs on a phone. Here nothing
+          scrolls sideways — on a phone each spec's label takes its own line
+          and the values sit side by side beneath it. */}
+      <div
+        role="table"
+        aria-label="Specifications compared across the selected Zap models"
+        className="mt-10"
+        style={{ ["--cols" as string]: columns }}
+      >
+        {/* Photos scroll away; the names below them stay. Every row is a
+            direct child of the table, because a sticky row only sticks
+            within its parent. */}
+        <div role="row" className={rowGrid}>
+          <div role="presentation" className="hidden md:block" />
+          {models.map((model) => (
+            <div key={model.id} role="presentation" className="relative">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-mist md:rounded-xl">
+                <Image
+                  src={model.image}
+                  alt={model.imageAlt}
+                  fill
+                  sizes="(max-width: 768px) 45vw, 25vw"
+                  className="object-cover object-[center_30%]"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => removeCompare(model.id)}
+                aria-label={`Remove Zap ${model.name}`}
+                className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-paper/90 text-lg leading-none text-ink shadow-sm backdrop-blur-sm transition-colors hover:bg-paper md:right-2 md:top-2"
+              >
+                <span aria-hidden>&times;</span>
+              </button>
+            </div>
+          ))}
+          {short ? (
+            <Link
+              href="/#range"
+              className="grid aspect-[4/3] place-items-center rounded-lg border border-dashed border-line text-center text-sm text-slate transition-colors hover:border-ink hover:text-ink md:rounded-xl"
+            >
+              + Add a model
+            </Link>
+          ) : null}
+        </div>
 
-          {/* Fixed layout, so the label column cannot help itself to a third
-              of a phone screen and squeeze the values into two words a line. */}
-          <colgroup>
-            <col className="w-36" />
+        <div
+          role="row"
+          className="sticky top-16 z-20 -mx-5 border-b border-line bg-paper/95 px-5 py-3 backdrop-blur-xl md:top-20 md:-mx-8 md:px-8 md:py-4 xl:-mx-12 xl:px-12"
+        >
+          <div className={rowGrid}>
+            <div role="columnheader" className="hidden self-end md:block">
+              <span className="text-sm text-ash">Specification</span>
+            </div>
             {models.map((model) => (
-              <col key={model.id} />
+              <div key={model.id} role="columnheader" className="min-w-0">
+                <Link href={`/range/${model.id}`} className="group block">
+                  <span className="title block truncate text-base group-hover:text-zap-ink md:text-lg">
+                    Zap {model.name}
+                  </span>
+                  <span className="lead block truncate text-xs md:text-sm">
+                    {seriesById[model.series].name}
+                  </span>
+                </Link>
+              </div>
             ))}
-            {short ? <col /> : null}
-          </colgroup>
+            {short ? <div role="presentation" /> : null}
+          </div>
+        </div>
 
-          <thead>
-            <tr>
-              <th scope="col" className="sticky left-0 z-10 bg-paper pb-6 pr-6 align-bottom">
-                <span className="text-sm text-ash">Specification</span>
-              </th>
-
-              {models.map((model) => (
-                <th
-                  key={model.id}
-                  scope="col"
-                  className="bg-paper pb-6 pr-6 align-bottom font-normal"
-                >
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-mist">
-                    <Image
-                      src={model.image}
-                      alt={model.imageAlt}
-                      fill
-                      sizes="(max-width: 640px) 12rem, 15rem"
-                      className="object-cover object-[center_30%]"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeCompare(model.id)}
-                      aria-label={`Remove Zap ${model.name}`}
-                      className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-paper/90 text-lg leading-none text-ink backdrop-blur-sm transition-colors hover:bg-paper"
-                    >
-                      <span aria-hidden>&times;</span>
-                    </button>
-                  </div>
-
-                  <Link href={`/range/${model.id}`} className="group mt-4 block">
-                    <span className="title block text-lg group-hover:text-zap-ink">
-                      Zap {model.name}
-                    </span>
-                    <span className="lead mt-1 block text-sm">
-                      {seriesById[model.series].name}
-                    </span>
-                  </Link>
-                </th>
-              ))}
-
-              {short ? (
-                <th scope="col" className="bg-paper pb-6 align-bottom font-normal">
-                  <Link
-                    href="/range"
-                    className="grid aspect-[4/3] w-full place-items-center rounded-xl border border-dashed border-line text-sm text-slate transition-colors hover:border-ink hover:text-ink"
-                  >
-                    + Add a model
-                  </Link>
-                </th>
+        {shown.map((row) => (
+          <div
+            key={row.label}
+            role="row"
+            className={`${rowGrid} border-b border-line py-4 md:py-5`}
+          >
+            <div
+              role="rowheader"
+              className="col-span-full mb-2 flex items-center gap-2 md:col-span-1 md:mb-0"
+            >
+              {!row.identical ? (
+                <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-zap" />
               ) : null}
-            </tr>
-          </thead>
+              <span className="text-xs text-ash md:text-sm">{row.label}</span>
+              {!row.identical ? <span className="sr-only">(differs between models)</span> : null}
+            </div>
 
-          <tbody>
-            {shown.map((row) => (
-              <tr key={row.label} className="align-top">
-                <th
-                  scope="row"
-                  className="sticky left-0 z-10 bg-paper py-4 pr-6 font-normal"
-                >
-                  <span className="text-sm text-ash">{row.label}</span>
-                </th>
-
-                {row.values.map((value, i) => (
-                  <td
-                    key={models[i].id}
-                    className={`whitespace-pre-line border-t border-line py-4 pr-6 text-[0.9375rem] ${
-                      row.identical ? "text-slate" : "text-ink"
-                    }`}
-                  >
-                    {value}
-                    {!row.identical && i === 0 ? (
-                      <span className="sr-only"> (differs between models)</span>
-                    ) : null}
-                  </td>
-                ))}
-
-                {short ? (
-                  <td className="border-t border-line" />
-                ) : null}
-              </tr>
+            {row.values.map((value, i) => (
+              <div
+                key={models[i].id}
+                role="cell"
+                className={`min-w-0 whitespace-pre-line break-words text-sm md:text-[0.9375rem] ${
+                  row.identical ? "text-slate" : "text-ink"
+                }`}
+              >
+                {value}
+              </div>
             ))}
-          </tbody>
-        </table>
+            {short ? <div role="presentation" /> : null}
+          </div>
+        ))}
       </div>
 
       {onlyDifferences && !shown.length ? (
@@ -207,6 +208,11 @@ export default function CompareTable() {
     </div>
   );
 }
+
+/** Same columns on every row, from --cols on the table: values only on a
+ *  phone (the label spans the full width above them), label first from md. */
+const rowGrid =
+  "grid grid-cols-[repeat(var(--cols),minmax(0,1fr))] gap-x-3 sm:gap-x-5 md:grid-cols-[10rem_repeat(var(--cols),minmax(0,1fr))] md:gap-x-6";
 
 function Empty({ title, copy }: { title: string; copy: string }) {
   return (

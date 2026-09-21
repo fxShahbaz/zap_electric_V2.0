@@ -4,14 +4,17 @@ import Image from "next/image";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { CTA } from "@/components/ui";
+import HeroWord from "@/components/hero-word";
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
+      // Scroll zoom on the outer wrapper; the CSS drive loop runs on the inner
+      // one. Separate nodes, so the two never fight over one transform.
       gsap.fromTo(
-        ".hero-media",
+        ".hero-scroll",
         { scale: 1.1 },
         {
           scale: 1,
@@ -32,12 +35,21 @@ export default function Hero() {
   return (
     <section ref={root} className="bg-paper pt-32 md:pt-40">
       <div className="shell">
-        <h1 className="title max-w-[16ch] text-[clamp(2.75rem,7.5vw,6rem)]">
+        {/* The sentence is read once, plainly; the swapping word is only seen. */}
+        <h1
+          aria-label="Electric scooters for everyday India"
+          className="title text-[clamp(2.75rem,7.5vw,6rem)]"
+        >
           <span data-appear-line>
             <span>Electric scooters</span>
           </span>
           <span data-appear-line style={{ ["--appear-delay" as string]: "110ms" }}>
-            <span>for everyday India</span>
+            <span>
+              {/* On a phone "India" always takes its own line, so a longer
+                  word never re-wraps the headline and shoves the page down. */}
+              for <HeroWord /> <br className="sm:hidden" />
+              India
+            </span>
           </span>
         </h1>
 
@@ -68,14 +80,32 @@ export default function Hero() {
           data-appear
           style={{ ["--appear-delay" as string]: "300ms" }}
         >
-          <Image
-            src="/images/hero.jpg"
-            alt="Riders on Zap electric scooters coming through a city gateway"
-            fill
-            priority
-            sizes="100vw"
-            className="hero-media object-cover object-[62%_center] will-change-transform sm:object-center"
-          />
+          <div className="hero-scroll absolute inset-0 will-change-transform">
+            {/* A slow push toward the lead rider, so the pack reads as coming
+                at you rather than as a still. */}
+            <div className="hero-drive absolute inset-0">
+              <Image
+                src="/images/hero.jpg"
+                alt="Riders on Zap electric scooters coming through a city gateway"
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-[62%_center] sm:object-center"
+              />
+
+              {/* Speed at the edges: a blurred copy, masked to the rim, that
+                  keeps streaming outward. The centre stays sharp. */}
+              <div aria-hidden className="hero-rush absolute inset-0">
+                <Image
+                  src="/images/hero.jpg"
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  className="object-cover object-[62%_center] sm:object-center"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

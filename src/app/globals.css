@@ -249,6 +249,135 @@ dialog.invite > div:focus-visible {
   }
 }
 
+/* Hero word ----------------------------------------------------------------
+   The swapping word in the headline (components/hero-word.tsx). Letters rise
+   in on a stagger and lift out together; the highlighter stroke swipes in
+   from the left behind them and wipes off to the right. */
+.hero-word-letter {
+  display: inline-block;
+  animation: hero-letter-in 0.7s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i) * 35ms);
+}
+[data-leaving] > .hero-word-letter {
+  animation: hero-letter-out 0.4s cubic-bezier(0.7, 0, 0.84, 0) both;
+  animation-delay: calc(var(--i) * 12ms);
+}
+
+.hero-word-mark {
+  position: absolute;
+  inset: 52% -0.08em 6% -0.08em;
+  z-index: 0;
+  border-radius: 0.06em;
+  background-color: color-mix(in srgb, var(--color-zap) 75%, transparent);
+  transform-origin: left center;
+  animation: hero-mark-in 0.8s var(--ease-out-expo) 0.2s both;
+}
+.hero-word-mark[data-leaving] {
+  transform-origin: right center;
+  animation: hero-mark-out 0.35s cubic-bezier(0.7, 0, 0.84, 0) both;
+}
+
+@keyframes hero-letter-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.55em) rotate(6deg);
+    filter: blur(6px);
+  }
+}
+@keyframes hero-letter-out {
+  to {
+    opacity: 0;
+    transform: translateY(-0.4em);
+    filter: blur(4px);
+  }
+}
+@keyframes hero-mark-in {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes hero-mark-out {
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word,
+  .hero-word-letter,
+  .hero-word-mark {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Charge tile ---------------------------------------------------------------
+   The /about gallery's first tile (components/gallery.tsx). --charge is
+   registered as an integer so it animates in whole steps, and the same value
+   drives the fill width, the printed percentage and the glow. */
+@property --charge {
+  syntax: "<integer>";
+  inherits: true;
+  initial-value: 100;
+}
+
+.charge-battery,
+.charge-glow {
+  --charge: 100;
+}
+
+.charge-fill {
+  width: calc(var(--charge) * 1%);
+  background: linear-gradient(90deg, var(--color-zap-ink), var(--color-zap));
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-zap) 45%, transparent);
+}
+
+.charge-pct {
+  counter-reset: charge var(--charge);
+}
+.charge-pct::after {
+  content: counter(charge) "%";
+}
+
+.charge-glow {
+  background: radial-gradient(
+    120% 70% at 50% 45%,
+    color-mix(in srgb, var(--color-zap) calc(var(--charge) * 0.18%), transparent),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .charge-battery,
+  .charge-glow {
+    animation: charge-up 6s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  }
+  .charge-bolt {
+    animation: charge-bolt 1.2s ease-in-out infinite;
+  }
+}
+
+/* Fill, hold full for a beat, drop back to a sliver. */
+@keyframes charge-up {
+  0% {
+    --charge: 6;
+  }
+  72%,
+  94% {
+    --charge: 100;
+  }
+  100% {
+    --charge: 6;
+  }
+}
+
+@keyframes charge-bolt {
+  50% {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
 /* Footer ------------------------------------------------------------------
    Three small motions, all CSS so the footer stays a server component, and
    all of them off under reduced motion. */
@@ -288,23 +417,73 @@ dialog.invite > div:focus-visible {
   background-size: 100% 1px;
 }
 
-/* The big wordmark: the PNG's shape, filled flat and faint. */
+/* The big wordmark: the logo used as a mask. The faint fade is the empty
+   battery; <ChargeField> draws the charge and the current inside it, and the
+   mask clips the canvas to the letters. */
 .footer-mark {
+  /* Fills the .charge wrapper, which owns the aspect ratio. Set here rather
+     than with utilities: unlayered CSS outranks Tailwind's layered classes. */
+  position: absolute;
+  inset: 0;
+  /* Vector, traced from the logo PNG: crisp at any width, unlike the
+     1147px bitmap it replaced. */
+  -webkit-mask-image: url("/brand/wordmark-mask.svg");
+  mask-image: url("/brand/wordmark-mask.svg");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   background-image: linear-gradient(
     to bottom,
-    rgb(255 255 255 / 0.16),
+    rgb(255 255 255 / 0.13),
     rgb(255 255 255 / 0.04)
   );
-  mask-image: url("/brand/wordmark-light.png");
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
+}
+
+/* The charge readout under the P. The wrapper is a size container so the
+   bolt and the number scale with the wordmark (cqw), from phone to desktop. */
+.charge {
+  container-type: inline-size;
+}
+
+.charge-bolt {
+  color: var(--color-zap);
+  filter: drop-shadow(0 0 0.6cqw rgb(97 183 110 / 0.7));
+  transition:
+    color 400ms,
+    opacity 400ms,
+    filter 400ms;
+}
+
+.charge-readout[data-phase="full"] .charge-bolt {
+  color: rgb(190 255 196);
+  filter: drop-shadow(0 0 1.2cqw rgb(97 183 110 / 0.95));
+}
+
+.charge-readout[data-phase="draining"] .charge-bolt {
+  opacity: 0.35;
+  filter: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .charge-readout[data-phase="charging"] .charge-bolt {
+    animation: charge-pulse 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes charge-pulse {
+  50% {
+    opacity: 0.45;
+    transform: scale(0.9);
+  }
 }
 
 /* The wordmark rises into place as the page runs out. Scroll-driven, so it
-   needs no script; browsers without view timelines just show it in place. */
+   needs no script; browsers without view timelines just show it in place.
+   On a wrapper, so it does not fight the fill animations for the element. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .footer-mark {
+    .footer-rise {
       animation: footer-rise linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 100%;
@@ -407,5 +586,88 @@ dialog.invite > div:focus-visible {
   30% {
     opacity: 1;
     transform: translateY(-3px);
+  }
+}
+
+/* Scroll blur ---------------------------------------------------------------
+   Four bands, each blurring twice as hard as the one above and masked to its
+   own slice of the strip with soft edges, so the blur ramps up towards the
+   bottom of the screen with no line where one layer starts. Each layer fades
+   by its own opacity — never the wrapper's (see components/scroll-blur.tsx). */
+.scroll-blur-layer {
+  position: absolute;
+  inset: 0;
+  opacity: var(--strength);
+  -webkit-backdrop-filter: blur(var(--blur));
+  backdrop-filter: blur(var(--blur));
+  -webkit-mask-image: var(--mask);
+  mask-image: var(--mask);
+}
+.scroll-blur-1 {
+  --blur: 1px;
+  --mask: linear-gradient(to bottom, transparent 0%, #000 25%, #000 50%, transparent 75%);
+}
+.scroll-blur-2 {
+  --blur: 3px;
+  --mask: linear-gradient(to bottom, transparent 25%, #000 50%, #000 75%, transparent 100%);
+}
+.scroll-blur-3 {
+  --blur: 6px;
+  --mask: linear-gradient(to bottom, transparent 50%, #000 75%, #000 100%);
+}
+.scroll-blur-4 {
+  --blur: 12px;
+  --mask: linear-gradient(to bottom, transparent 70%, #000 100%);
+}
+
+/* Hero: the photo keeps moving.
+   .hero-drive  — a slow push-in toward the lead rider, back and forth, so the
+                  pack appears to be riding toward the viewer.
+   .hero-rush   — a blurred copy masked to the rim, scaling outward on a short
+                  loop: motion blur at the edges, sharp in the middle.
+   Both are transform/opacity only, so they stay on the compositor. */
+.hero-drive {
+  transform-origin: 62% 64%;
+}
+
+.hero-rush {
+  opacity: 0;
+  filter: blur(10px) saturate(1.1);
+  transform-origin: 62% 60%;
+  -webkit-mask-image: radial-gradient(ellipse 70% 65% at 62% 60%, transparent 45%, #000 95%);
+  mask-image: radial-gradient(ellipse 70% 65% at 62% 60%, transparent 45%, #000 95%);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-drive {
+    animation: hero-drive 18s ease-in-out infinite alternate;
+  }
+
+  .hero-rush {
+    animation: hero-rush 2.2s linear infinite;
+  }
+}
+
+@keyframes hero-drive {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.16) translate3d(-1.2%, 0.8%, 0);
+  }
+}
+
+@keyframes hero-rush {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  35% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.14);
   }
 }

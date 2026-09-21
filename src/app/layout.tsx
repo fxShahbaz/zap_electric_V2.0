@@ -5,6 +5,7 @@ import SmoothScroll from "@/components/smooth-scroll";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import DealerModal from "@/components/dealer-modal";
+import ScrollBlur from "@/components/scroll-blur";
 import CompareDock from "@/components/compare-dock";
 import EnquiryChat from "@/components/enquiry-chat";
 
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         <main id="top">{children}</main>
         <SiteFooter />
+        <ScrollBlur />
         <DealerModal />
         <CompareDock />
         <EnquiryChat />

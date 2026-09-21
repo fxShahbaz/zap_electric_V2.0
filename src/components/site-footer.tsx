@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { contactChannels } from "@/lib/content";
 import { Icon } from "@/components/icons";
+import ChargeField from "@/components/charge-field";
 
 /** The footer closes the page rather than just ending it: a strip of facts,
  *  one last choice (ride one / sell them) as two pictures, the map of the
@@ -182,12 +183,13 @@ export default function SiteFooter() {
           </nav>
         </div>
 
-        {/* The full stop. The wordmark file is 1147px wide — too small to
-            show in colour at this size on a retina screen — so here it is only
-            a mask: one flat, faint fill hides the soft edges. The coloured
-            logo, at a size the file can carry, is in the fine print below. */}
+        {/* The full stop: the wordmark as a battery charging — green charge
+            filling and draining, dust streaming through it like current. The
+            logo file only shapes the mask; everything inside is drawn. */}
         <div aria-hidden className="mt-20 overflow-clip md:mt-28">
-          <div className="footer-mark aspect-[1147/379] w-full" />
+          <div className="footer-rise">
+            <ChargeField />
+          </div>
         </div>
 
         {/* Fine print */}

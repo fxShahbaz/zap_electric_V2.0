@@ -463,7 +463,7 @@ export default function EnquiryChat() {
         aria-label={open ? "Close enquiry chat" : "Open enquiry chat"}
         aria-expanded={open}
         aria-controls="enquiry-chat"
-        className="fixed bottom-5 right-5 z-50 grid h-14 w-14 place-items-center rounded-full bg-ink text-paper shadow-[0_12px_32px_-8px_rgba(16,19,16,0.45)] transition-[background-color,transform] duration-300 hover:scale-105 hover:bg-zap-ink sm:bottom-6 sm:right-6"
+        className="fixed bottom-5 right-5 z-50 grid h-14 w-14 place-items-center rounded-full bg-ink text-paper ring-1 ring-paper/20 shadow-[0_12px_32px_-8px_rgba(16,19,16,0.45)] transition-[background-color,transform] duration-300 hover:scale-105 hover:bg-zap-ink sm:bottom-6 sm:right-6"
       >
         <Icon name={open ? "close" : "chat"} className="h-6 w-6" />
         {!seen ? (

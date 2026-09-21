@@ -360,12 +360,9 @@ export const chapters: Chapter[] = [
   },
 ];
 
+/** Three photos; the gallery opens on a charging tile instead of a fourth,
+ *  since gallery-street.jpg already heads the /about page. */
 export const gallery = [
-  {
-    image: "/images/gallery-street.jpg",
-    alt: "Rider on an electric scooter in city traffic",
-    caption: "Daily commute",
-  },
   {
     image: "/images/gallery-market.jpg",
     alt: "Electric scooter on a busy market street",
