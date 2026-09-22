@@ -101,8 +101,12 @@ export default function ChargeField() {
 
     // Straight to the DOM, and only on change: the loop runs at 60fps, the
     // number changes a few times a second.
-    const report = (level: number, phase: Phase) => {
+    const report = (level: number, cyclePhase: Phase) => {
       const value = toPercent(level);
+      // The fill eases in, so the number rounds up to 100 a moment before the
+      // cycle leaves "charging" — and a draining battery still reads 100 for
+      // a beat. At 100 it is full: steady bolt, no pulse, whatever the cycle.
+      const phase: Phase = value >= 100 ? "full" : cyclePhase;
       if (value !== shownPercent && percent.current) {
         shownPercent = value;
         percent.current.textContent = `${value}%`;
