@@ -1,5 +1,6 @@
 import Hero from "@/components/hero";
 import Range from "@/components/range";
+import Spotlight from "@/components/spotlight";
 import Reasons from "@/components/reasons";
 import Specs from "@/components/specs";
 import DealerCta from "@/components/dealer-cta";
@@ -10,6 +11,7 @@ export default function Home() {
     <>
       <Hero />
       <Range />
+      <Spotlight />
       <Reasons />
       <Specs />
       <DealerCta />

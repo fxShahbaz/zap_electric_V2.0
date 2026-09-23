@@ -13,7 +13,14 @@ export type IconName =
   | "arrow"
   | "chat"
   | "close"
-  | "restart";
+  | "restart"
+  | "moped"
+  | "route"
+  | "gauge"
+  | "factory"
+  | "gear"
+  | "team"
+  | "check";
 
 function Glyph({ children, ...props }: SVGProps<SVGSVGElement>) {
   return (
@@ -109,6 +116,83 @@ function Restart(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+/** A scooter, side on — the models. */
+function Moped(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Glyph {...props}>
+      <circle cx="6.25" cy="17" r="2.25" />
+      <circle cx="17.75" cy="17" r="2.25" />
+      <path d="M8.5 17h3l1.75-5h2.25a3 3 0 0 1 3 3v2" />
+      <path d="M13.25 12 11.5 7.25h2.75" />
+    </Glyph>
+  );
+}
+
+/** An arrow heading off the page — how far a charge goes. */
+function Route(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Glyph {...props}>
+      <path d="M4.5 19.5 19 5" strokeDasharray="3 3" />
+      <path d="M12.5 5H19v6.5" />
+    </Glyph>
+  );
+}
+
+/** A speedometer needle — top speed. */
+function Gauge(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Glyph {...props}>
+      <path d="M4.5 16.5a7.5 7.5 0 1 1 15 0" />
+      <path d="M12 16.5 15.75 11" />
+      <path d="M12 7.5v1.25M6.6 10.6l.9.9M17.4 10.6l-.9.9" />
+    </Glyph>
+  );
+}
+
+/** A saw-tooth roof and a stack — where the scooters are built. */
+function Factory(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Glyph {...props}>
+      <path d="M4 19.5v-8l4-2.5v2.5l4-2.5v2.5l4-2.5v10.5" />
+      <path d="M4 19.5h16" />
+      <path d="M16.5 8.5V4.75h2.25V7" />
+      <path d="M7.5 15.5h1.5M11.5 15.5H13" />
+    </Glyph>
+  );
+}
+
+/** A cog — checked at every stage. */
+function Gear(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Glyph {...props}>
+      <circle cx="12" cy="12" r="3.25" />
+      <path d="M12 4.75v2M12 17.25v2M19.25 12h-2M6.75 12h-2M17.13 6.87l-1.42 1.42M8.29 15.71l-1.42 1.42M17.13 17.13l-1.42-1.42M8.29 8.29 6.87 6.87" />
+    </Glyph>
+  );
+}
+
+/** Two people — the team. */
+function Team(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Glyph {...props}>
+      <circle cx="9" cy="8" r="2.75" />
+      <circle cx="16.25" cy="9" r="2.25" />
+      <path d="M3.75 19v-1a4.25 4.25 0 0 1 4.25-4.25h2A4.25 4.25 0 0 1 14.25 18v1" />
+      <path d="M15.5 14a3.25 3.25 0 0 1 4.75 2.9V19" />
+    </Glyph>
+  );
+}
+
+/** A tick in a ring — designed for real use. */
+function Check(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Glyph {...props}>
+      <circle cx="12" cy="12" r="8.25" />
+      <path d="m8.25 12.25 2.5 2.5 5-5.5" />
+    </Glyph>
+  );
+}
+
 const glyphs: Record<IconName, (props: SVGProps<SVGSVGElement>) => React.ReactElement> = {
   rupee: Rupee,
   "home-charge": HomeCharge,
@@ -118,6 +202,13 @@ const glyphs: Record<IconName, (props: SVGProps<SVGSVGElement>) => React.ReactEl
   chat: Chat,
   close: Close,
   restart: Restart,
+  moped: Moped,
+  route: Route,
+  gauge: Gauge,
+  factory: Factory,
+  gear: Gear,
+  team: Team,
+  check: Check,
 };
 
 export function Icon({ name, className }: { name: IconName; className?: string }) {

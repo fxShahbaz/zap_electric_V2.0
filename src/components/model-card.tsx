@@ -10,15 +10,19 @@ export default function ModelCard({
   model,
   index = 0,
   detailed = false,
+  hidden = false,
 }: {
   model: Scooter;
   /** Position in its row, for the staggered reveal. */
   index?: number;
   detailed?: boolean;
+  /** Filtered out — kept mounted so its reveal state survives. */
+  hidden?: boolean;
 }) {
   return (
     <li
       data-reveal
+      hidden={hidden}
       className="relative"
       style={{ ["--reveal-delay" as string]: `${(index % 3) * 70}ms` }}
     >

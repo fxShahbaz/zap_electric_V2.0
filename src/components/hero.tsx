@@ -3,7 +3,9 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { CTA } from "@/components/ui";
+import { keyFigures } from "@/lib/content";
+import { CTA, Eyebrow } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import HeroWord from "@/components/hero-word";
 
 export default function Hero() {
@@ -35,10 +37,14 @@ export default function Hero() {
   return (
     <section ref={root} className="bg-paper pt-32 md:pt-40">
       <div className="shell">
+        <Eyebrow className="text-slate" data-appear>
+          Electric scooters
+        </Eyebrow>
+
         {/* The sentence is read once, plainly; the swapping word is only seen. */}
         <h1
           aria-label="Electric scooters for everyday India"
-          className="title text-[clamp(2.75rem,7.5vw,6rem)]"
+          className="title mt-5 text-[clamp(2.75rem,7.5vw,6rem)]"
         >
           <span data-appear-line>
             <span>Electric scooters</span>
@@ -48,7 +54,7 @@ export default function Hero() {
               {/* On a phone "India" always takes its own line, so a longer
                   word never re-wraps the headline and shoves the page down. */}
               for <HeroWord /> <br className="sm:hidden" />
-              India
+              <span className="text-zap-ink">India.</span>
             </span>
           </span>
         </h1>
@@ -68,7 +74,7 @@ export default function Hero() {
           style={{ ["--appear-delay" as string]: "360ms" }}
         >
           <CTA href="#range">See the range</CTA>
-          <CTA href="/dealers" variant="outline">
+          <CTA href="/dealers" variant="green">
             Become a dealer
           </CTA>
         </div>
@@ -106,7 +112,42 @@ export default function Hero() {
               </div>
             </div>
           </div>
+
+          {/* The tagline, pinned to the corner of the photo. */}
+          <p
+            className="absolute right-5 top-5 flex flex-col items-end gap-3 text-right font-mono text-[clamp(1rem,2.4vw,1.875rem)] font-semibold uppercase leading-[1.15] tracking-[0.22em] text-paper drop-shadow-[0_2px_14px_rgb(16_19_16/0.7)] sm:right-8 sm:top-8 md:right-12 md:top-12"
+            data-appear
+            style={{ ["--appear-delay" as string]: "520ms" }}
+          >
+            <span>
+              Charge
+              <br />
+              ahead
+            </span>
+            <span aria-hidden className="h-[3px] w-[2.5em] bg-zap" />
+          </p>
         </div>
+
+        {/* The figures, on ink, so the page lands on something solid before
+            the range. Green icons: the strip is where the brand colour lives. */}
+        <ul
+          className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-paper/10 ring-1 ring-ink lg:grid-cols-4"
+          data-appear
+          style={{ ["--appear-delay" as string]: "440ms" }}
+        >
+          {keyFigures.map((figure) => (
+            <li
+              key={figure.label}
+              className="flex items-center gap-4 bg-ink px-5 py-5 text-paper sm:px-7 sm:py-6"
+            >
+              <Icon name={figure.icon} className="h-7 w-7 shrink-0 text-zap" />
+              <div className="min-w-0">
+                <p className="figure-num text-xl sm:text-2xl">{figure.value}</p>
+                <p className="mt-1 text-xs text-paper/60 sm:text-sm">{figure.label}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

@@ -279,12 +279,12 @@ export const benefits = [
 /** The short version for the home page — one line each, no paragraphs.
  *  The full nine live in `benefits` and are used on /about. */
 export const reasons: { icon: IconName; title: string; copy: string }[] = [
-  { icon: "rupee", title: "Cheap to run", copy: "A charge costs a fraction of a tank." },
   {
     icon: "home-charge",
     title: "Charges at home",
     copy: "Ordinary socket. No wall box, no station.",
   },
+  { icon: "rupee", title: "Cheap to run", copy: "A charge costs a fraction of a tank." },
   { icon: "spanner", title: "Little to service", copy: "No oil, no clutch, no gearbox." },
   { icon: "quiet", title: "Quiet and light", copy: "80 kg, and nothing to wake the street." },
 ];
@@ -301,11 +301,20 @@ export const standardFitment = [
   "Micro charger with auto cutoff",
 ];
 
-export const keyFigures = [
-  { value: 120, suffix: "\u00a0km", label: "Longest range per charge" },
-  { value: 9, suffix: "", label: "Models in the range" },
-  { value: 3, suffix: "–5 hrs", label: "Lithium-ion charge time" },
-  { value: 0, suffix: "", label: "Tailpipe emissions" },
+/** The strip under the hero photo. Figures already on the site, not new ones. */
+export const keyFigures: { icon: IconName; value: string; label: string }[] = [
+  { icon: "moped", value: String(scooters.length), label: "Models in the range" },
+  { icon: "route", value: "Up to 120 km", label: "Per charge" },
+  { icon: "gauge", value: commonSpecs.topSpeed, label: "Top speed" },
+  { icon: "home-charge", value: "Home charging", label: "With the supplied charger" },
+];
+
+/** What stands behind the scooters — the "built with purpose" panel. */
+export const purposePoints: { icon: IconName; label: string }[] = [
+  { icon: "factory", label: "Manufacturing setup in India" },
+  { icon: "gear", label: "Quality checks at every stage" },
+  { icon: "team", label: "Built by a dedicated team" },
+  { icon: "check", label: "Designed for real-world use" },
 ];
 
 /* -------------------------------------------------------------------------- */

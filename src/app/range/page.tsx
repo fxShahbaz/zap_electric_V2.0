@@ -32,7 +32,7 @@ export default function RangePage() {
     <>
       <PageHeader
         title="The range"
-        intro={`${Say(scooters.length)} electric scooters in ${say(series.length)} series. Pick a series, open any model for its full specification, or choose two or three to compare.`}
+        intro={`${Say(scooters.length)} electric scooters, 60 to 120 km on a charge. Open any model for its full specification, or choose two or three to compare.`}
         actions={
           <>
             <CTA href="#enquire">Enquire</CTA>
