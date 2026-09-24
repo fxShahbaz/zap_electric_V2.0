@@ -144,6 +144,12 @@
     animation: zap-appear 0.9s var(--ease-out-expo) both;
     animation-delay: var(--appear-delay, 0ms);
   }
+
+  /* Held while the preloader is up, so the hero arrives after it lifts. */
+  :root[data-preloading] [data-appear],
+  :root[data-preloading] [data-appear-line] > span {
+    animation-play-state: paused;
+  }
   [data-appear-line] {
     display: block;
     overflow: hidden;
@@ -669,5 +675,32 @@ dialog.invite > div:focus-visible {
   100% {
     opacity: 0;
     transform: scale(1.14);
+  }
+}
+
+/* Preloader ---------------------------------------------------------------
+   The charging wordmark on paper (components/preloader.tsx). The mask is the
+   footer's; only the empty-battery tint and the full-charge bolt change. */
+.charge[data-tone="paper"] .footer-mark {
+  background-image: linear-gradient(
+    to bottom,
+    rgb(16 19 16 / 0.1),
+    rgb(16 19 16 / 0.05)
+  );
+}
+
+.charge[data-tone="paper"] .charge-readout[data-phase="full"] .charge-bolt {
+  color: var(--color-zap-ink);
+  filter: drop-shadow(0 0 1cqw rgb(97 183 110 / 0.6));
+}
+
+.preloader[data-leaving] {
+  animation: preloader-out 650ms var(--ease-out-expo) both;
+}
+
+@keyframes preloader-out {
+  to {
+    opacity: 0;
+    transform: translateY(-2.5%);
   }
 }

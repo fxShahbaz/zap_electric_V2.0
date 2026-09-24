@@ -21,6 +21,11 @@ import { useEffect, useRef } from "react";
  *
  * It only runs while on screen and while the tab is visible. Under
  * prefers-reduced-motion it paints one still frame — half charged — and stops.
+ *
+ * `mode="once"` is the home page preloader: one climb from empty to full,
+ * `onFull` when the readout hits 100, and the field keeps running so the
+ * overlay has something alive under it while it lifts. `tone="paper"` is the
+ * same thing on a white surface.
  */
 
 type Particle = {
@@ -33,6 +38,7 @@ type Particle = {
 };
 
 const CYCLE = 11_000; // one charge/drain, ms
+const ONCE = 4_800; // the preloader's climb to full, ms
 
 const LOW = 0.18;
 const FULL = 0.88;
@@ -46,6 +52,15 @@ function chargeState(t: number): { level: number; phase: Phase } {
   if (p < 0.62) return { level: LOW + (FULL - LOW) * ease(p / 0.62), phase: "charging" };
   if (p < 0.8) return { level: FULL, phase: "full" };
   return { level: FULL - (FULL - LOW) * ease((p - 0.8) / 0.2), phase: "draining" };
+}
+
+/** Once: ease up from empty to full and stay there. */
+function chargeOnce(elapsed: number): { level: number; phase: Phase } {
+  const p = Math.min(1, elapsed / ONCE);
+  // Slow start, steady middle, gentle landing — the number should be
+  // readable as it climbs, not a blur that lands on 100.
+  const ease = p * p * (3 - 2 * p);
+  return { level: LOW + (FULL - LOW) * ease, phase: p < 1 ? "charging" : "full" };
 }
 
 /** The level the letters show, as the percentage a battery would. */
@@ -73,11 +88,23 @@ function makeGlow(colour: string) {
   return c;
 }
 
-export default function ChargeField() {
+export default function ChargeField({
+  mode = "loop",
+  tone = "ink",
+  onFull,
+}: {
+  mode?: "loop" | "once";
+  tone?: "ink" | "paper";
+  onFull?: () => void;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
   const readout = useRef<HTMLDivElement>(null);
   const percent = useRef<HTMLSpanElement>(null);
   const label = useRef<HTMLSpanElement>(null);
+  const full = useRef(onFull);
+  useEffect(() => {
+    full.current = onFull;
+  });
 
   useEffect(() => {
     const canvas = ref.current;
@@ -86,6 +113,9 @@ export default function ChargeField() {
     if (!ctx) return;
 
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const once = mode === "once";
+    const t0 = performance.now();
+    let reachedFull = false;
     const hot = makeGlow("190, 255, 196");
     const dust = makeGlow("255, 255, 255");
 
@@ -114,6 +144,10 @@ export default function ChargeField() {
         shownPhase = phase;
         readout.current.dataset.phase = phase;
         label.current.textContent = phaseLabel[phase];
+      }
+      if (once && value >= 100 && !reachedFull) {
+        reachedFull = true;
+        full.current?.();
       }
     };
 
@@ -149,9 +183,14 @@ export default function ChargeField() {
     };
 
     const draw = (t: number, dt: number) => {
+      // Not laid out yet: every gradient below would be fed NaN. The resize
+      // observer paints again once the canvas has a size.
+      if (!w || !h) return;
       const { level, phase } = still
-        ? { level: 0.55, phase: "charging" as Phase }
-        : chargeState(t);
+        ? { level: once ? FULL : 0.55, phase: (once ? "full" : "charging") as Phase }
+        : once
+          ? chargeOnce(t - t0)
+          : chargeState(t);
       report(level, phase);
       ctx.clearRect(0, 0, w, h);
 
@@ -305,10 +344,12 @@ export default function ChargeField() {
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [mode]);
+
+  const light = tone === "paper";
 
   return (
-    <div className="charge relative aspect-[1147/379] w-full">
+    <div className="charge relative aspect-[1147/379] w-full" data-tone={tone}>
       <div className="footer-mark">
         <canvas ref={ref} aria-hidden className="absolute inset-0 h-full w-full" />
       </div>
@@ -331,13 +372,13 @@ export default function ChargeField() {
         <div className="flex flex-col">
           <span
             ref={percent}
-            className="title text-[5.2cqw] leading-none tabular-nums text-paper"
+            className={`title text-[5.2cqw] leading-none tabular-nums ${light ? "text-ink" : "text-paper"}`}
           >
             8%
           </span>
           <span
             ref={label}
-            className="mt-[0.5cqw] text-[max(0.7rem,1.05cqw)] leading-none text-paper/50"
+            className={`mt-[0.5cqw] text-[max(0.7rem,1.05cqw)] leading-none ${light ? "text-slate" : "text-paper/50"}`}
           >
             Charging
           </span>
