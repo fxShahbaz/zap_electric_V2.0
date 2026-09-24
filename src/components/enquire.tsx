@@ -35,7 +35,7 @@ export default function Enquire({ defaultModel = "" }: { defaultModel?: string }
   return (
     <section
       id="enquire"
-      className="scroll-mt-24 bg-mist py-24 md:py-32"
+      className="scroll-mt-32 bg-mist py-24 md:py-32"
       aria-labelledby="enquire-title"
     >
       <div className="shell">

@@ -51,10 +51,21 @@ export default function SiteHeader() {
           : "border-b border-transparent bg-paper/0"
       }`}
     >
+      {/* The strip: one line, always green, above everything. */}
+      <Link
+        href="/dealers#dealer-form"
+        className="block bg-zap text-ink transition-colors duration-300 hover:bg-zap-ink hover:text-paper"
+      >
+        <span className="shell flex h-8 items-center justify-center gap-3 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em]">
+          <span className="truncate">Charge ahead — now appointing dealers across India</span>
+          <span aria-hidden className="shrink-0">→</span>
+        </span>
+      </Link>
+
       {/* Read-progress hairline — the one piece of chrome that tracks scroll. */}
       <div
         aria-hidden
-        className="absolute inset-x-0 top-0 h-px origin-left bg-zap transition-opacity duration-300"
+        className="absolute inset-x-0 top-8 h-px origin-left bg-zap transition-opacity duration-300"
         style={{ transform: `scaleX(${progress})`, opacity: stuck ? 1 : 0 }}
       />
 

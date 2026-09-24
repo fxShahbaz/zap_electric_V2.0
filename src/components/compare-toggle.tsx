@@ -31,7 +31,7 @@ export default function CompareToggle({
     ? "bg-zap-ink text-paper hover:bg-ink"
     : tone === "overlay"
       ? "bg-paper/85 text-zap-ink backdrop-blur-sm hover:bg-paper disabled:bg-paper/50 disabled:text-ash"
-      : "bg-zap-wash text-zap-ink hover:bg-zap hover:text-ink disabled:bg-mist disabled:text-ash";
+      : "bg-zap text-ink hover:bg-zap-ink hover:text-paper disabled:bg-mist disabled:text-ash";
 
   return (
     <button

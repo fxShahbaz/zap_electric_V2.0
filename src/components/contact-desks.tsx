@@ -41,7 +41,7 @@ export default function ContactDesks() {
     <section
       id="desks"
       ref={root}
-      className="scroll-mt-24 bg-paper py-24 md:py-32"
+      className="scroll-mt-32 bg-paper py-24 md:py-32"
       aria-labelledby="desks-title"
     >
       <div className="shell">

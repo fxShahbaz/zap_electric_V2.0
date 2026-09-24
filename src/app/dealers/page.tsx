@@ -70,7 +70,7 @@ export default function DealersPage() {
       {/* The form ---------------------------------------------------------- */}
       <section
         id="dealer-form"
-        className="scroll-mt-24 bg-paper py-24 md:py-32"
+        className="scroll-mt-32 bg-paper py-24 md:py-32"
         aria-labelledby="dealer-form-title"
       >
         <div className="shell">

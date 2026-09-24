@@ -8,7 +8,7 @@ import { CTA, Eyebrow } from "@/components/ui";
  *  neither reads as an empty slab. */
 export default function DealerCta() {
   return (
-    <section id="dealers" className="scroll-mt-24 bg-paper pb-24 md:pb-32">
+    <section id="dealers" className="scroll-mt-32 bg-paper pb-24 md:pb-32">
       <div className="shell">
         <div className="overflow-hidden rounded-2xl ring-1 ring-line" data-reveal>
           {/* Built with purpose ------------------------------------------ */}

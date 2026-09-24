@@ -11,7 +11,7 @@ const rows = [
 
 export default function Specs() {
   return (
-    <section id="specs" className="scroll-mt-24 bg-paper py-24 md:py-32">
+    <section id="specs" className="scroll-mt-32 bg-paper py-24 md:py-32">
       <div className="shell">
         <h2 className="title text-[clamp(1.875rem,3.6vw,2.75rem)]" data-reveal>
           The difference between the two series

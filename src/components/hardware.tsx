@@ -35,7 +35,7 @@ export default function Hardware() {
     <section
       id="hardware"
       ref={root}
-      className="scroll-mt-24 bg-paper py-24 md:py-32"
+      className="scroll-mt-32 bg-paper py-24 md:py-32"
     >
       <div className="shell">
         <h2 className="title text-[clamp(1.875rem,3.6vw,2.75rem)]" data-reveal>

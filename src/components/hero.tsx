@@ -35,7 +35,7 @@ export default function Hero() {
   );
 
   return (
-    <section ref={root} className="bg-paper pt-32 md:pt-40">
+    <section ref={root} className="bg-paper pt-40 md:pt-48">
       <div className="shell">
         <Eyebrow className="text-slate" data-appear>
           Electric scooters

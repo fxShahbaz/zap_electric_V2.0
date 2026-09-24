@@ -11,7 +11,7 @@ export default function Faq({
   className?: string;
 }) {
   return (
-    <section id={id} className={`scroll-mt-24 bg-paper py-24 md:py-32 ${className}`}>
+    <section id={id} className={`scroll-mt-32 bg-paper py-24 md:py-32 ${className}`}>
       <div className="shell">
         <div className="max-w-3xl">
         <h2 className="title text-[clamp(1.875rem,3.6vw,2.75rem)]" data-reveal>

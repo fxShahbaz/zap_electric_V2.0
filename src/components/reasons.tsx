@@ -4,7 +4,7 @@ import { Icon } from "@/components/icons";
 /** Four lines. Anyone who wants the long version can read /about. */
 export default function Reasons() {
   return (
-    <section id="why" className="scroll-mt-24 bg-mist py-24 md:py-32">
+    <section id="why" className="scroll-mt-32 bg-mist py-24 md:py-32">
       <div className="shell">
         <h2 className="title max-w-[18ch] text-[clamp(1.875rem,3.6vw,2.75rem)]" data-reveal>
           Why <span className="text-zap-ink">Zap</span>

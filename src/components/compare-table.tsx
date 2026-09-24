@@ -144,7 +144,7 @@ export default function CompareTable() {
 
         <div
           role="row"
-          className="sticky top-16 z-20 -mx-5 border-b border-line bg-paper/95 px-5 py-3 backdrop-blur-xl md:top-20 md:-mx-8 md:px-8 md:py-4 xl:-mx-12 xl:px-12"
+          className="sticky top-24 z-20 -mx-5 border-b border-line bg-paper/95 px-5 py-3 backdrop-blur-xl md:top-28 md:-mx-8 md:px-8 md:py-4 xl:-mx-12 xl:px-12"
         >
           <div className={rowGrid}>
             <div role="columnheader" className="hidden self-end md:block">

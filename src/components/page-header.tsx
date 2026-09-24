@@ -17,7 +17,7 @@ export default function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="bg-paper pt-32 md:pt-40">
+    <header className="bg-paper pt-40 md:pt-48">
       <div className="shell">
         <h1 className="title max-w-[16ch] text-[clamp(2.5rem,6.4vw,5rem)]" data-appear>
           {title}

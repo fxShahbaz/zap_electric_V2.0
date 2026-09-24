@@ -36,7 +36,7 @@ export default function ContactPage() {
       {/* The form, with what happens next held beside it ------------------ */}
       <section
         id="message"
-        className="scroll-mt-24 bg-mist py-24 md:py-32"
+        className="scroll-mt-32 bg-mist py-24 md:py-32"
         aria-labelledby="message-title"
       >
         <div className="shell">

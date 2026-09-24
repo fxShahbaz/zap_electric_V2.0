@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { WORDMARK_PATH, WORDMARK_VIEWBOX } from "@/lib/wordmark-path";
 
 /**
  * The footer wordmark as a battery that is charging.
@@ -313,26 +312,6 @@ export default function ChargeField() {
       <div className="footer-mark">
         <canvas ref={ref} aria-hidden className="absolute inset-0 h-full w-full" />
       </div>
-
-      {/* The letters' edge, drawn as a vector stroke over the mask: a fixed
-          hairline at any size, so the cut reads sharp even where the fill is
-          dark. Same traced path as the mask, so the two line up exactly. */}
-      <svg
-        aria-hidden
-        viewBox={WORDMARK_VIEWBOX}
-        preserveAspectRatio="none"
-        className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
-      >
-        <path
-          d={WORDMARK_PATH}
-          fill="none"
-          fillRule="evenodd"
-          stroke="rgba(214, 255, 220, 0.45)"
-          strokeWidth={1.25}
-          vectorEffect="non-scaling-stroke"
-          strokeLinejoin="round"
-        />
-      </svg>
 
       {/* Under the P's bowl: x 76–100%, y 64–100% of the logo box is empty. */}
       <div

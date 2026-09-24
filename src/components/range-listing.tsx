@@ -22,7 +22,7 @@ export default function RangeListing() {
     // new list from its top rather than wherever the old one left the page.
     const bar = top.current;
     if (bar && bar.getBoundingClientRect().top < 0) {
-      window.scrollTo({ top: bar.getBoundingClientRect().top + window.scrollY - 80 });
+      window.scrollTo({ top: bar.getBoundingClientRect().top + window.scrollY - 112 });
     }
   };
 
@@ -37,7 +37,7 @@ export default function RangeListing() {
 
   return (
     <div ref={top}>
-      <div className="sticky top-16 z-30 border-y border-line bg-paper/85 backdrop-blur-xl md:top-20">
+      <div className="sticky top-24 z-30 border-y border-line bg-paper/85 backdrop-blur-xl md:top-28">
         <div className="shell flex items-center gap-2 overflow-x-auto py-3 [scrollbar-width:none]">
           <span className="mr-2 hidden shrink-0 text-sm text-ash sm:inline">Range</span>
           <div role="group" aria-label="Filter by range" className="flex gap-2">

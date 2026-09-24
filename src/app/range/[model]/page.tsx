@@ -48,7 +48,7 @@ export default async function ModelPage({ params }: { params: Params }) {
 
   return (
     <>
-      <header className="bg-paper pt-32 md:pt-40">
+      <header className="bg-paper pt-40 md:pt-48">
         <div className="shell">
           <Link
             href="/range"
@@ -130,7 +130,7 @@ export default async function ModelPage({ params }: { params: Params }) {
       </section>
 
       {/* Full specification ------------------------------------------------ */}
-      <section id="specification" className="scroll-mt-24 bg-mist py-24 md:py-32">
+      <section id="specification" className="scroll-mt-32 bg-mist py-24 md:py-32">
         <div className="shell">
           <h2 className="title text-[clamp(1.875rem,3.6vw,2.75rem)]" data-reveal>
             Full specification
